@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>planello - Premium Task Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+<div class="logo-bar">
+    <div class="logo-section">
+        <i class="fas fa-list-check logo-icon" aria-hidden="true"></i>
+        <span class="logo-text">planello</span>
+    </div>
+    <div class="right-controls">
+        <div class="theme-toggle">
+            <button id="darkModeToggle" class="theme-btn" aria-label="Toggle dark mode">
+                <i class="fas fa-moon" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="user-profile">
+            <button id="userProfileBtn" class="user-profile-btn" aria-label="User profile">
+                <div class="user-avatar">
+                    <img id="userAvatar" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CjxjaXJjbGUgY3g9IjIwIiBjeT0iMTYiIHI9IjYiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik04IDM0QzggMjYuMjY4IDEzLjI2OCAyMSAyMSAyMUMyOC43MzIgMjEgMzQgMjYuMjY4IDM0IDM0IiBmaWxsPSJ3aGl0ZSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudCIgeDE9IjAiIHkxPSIwIiB4Mj0iNDAiIHkyPSI0MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjNjc3ZWVhIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzc2NGJhMiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPgo=" alt="User Avatar" class="avatar-img">
+                    <i class="fas fa-user-tie avatar-fallback"></i>
+                </div>
+                <span class="user-name" id="userName">User</span>
+                <i class="fas fa-chevron-down dropdown-arrow"></i>
+            </button>
+
+            <div id="userProfileDropdown" class="user-profile-dropdown">
+                <div class="profile-header">
+                    <div class="profile-avatar-section">
+                        <div class="profile-avatar">
+                            <img id="profileAvatar" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CjxjaXJjbGUgY3g9IjQwIiBjeT0iMzIiIHI9IjEyIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTYgNjhDMTYgNTIuNTM2IDI2LjUzNiA0MiA0MiA0MkM1Ny40NjQgNDIgNjggNTIuNTM2IDY4IDY4IiBmaWxsPSJ3aGl0ZSIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudCIgeDE9IjAiIHkxPSIwIiB4Mj0iODAiIHkyPSI4MCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBzdG9wLWNvbG9yPSIjNjc3ZWVhIi8+CjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzc2NGJhMiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPgo=" alt="Profile Avatar" class="profile-avatar-img">
+                            <i class="fas fa-user-tie profile-avatar-fallback"></i>
+                        </div>
+                        <button id="changePhotoBtn" class="change-photo-btn">
+                            <i class="fas fa-camera"></i>
+                            Change Photo
+                        </button>
+                        <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                    </div>
+                    <h3 class="profile-title">User Profile</h3>
+                </div>
+
+                <div class="profile-form">
+                    <div class="form-group">
+                        <label for="profileName">Full Name</label>
+                        <input type="text" id="profileName" class="profile-input" placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profileEmail">Email</label>
+                        <input type="email" id="profileEmail" class="profile-input" placeholder="Enter your email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profilePhone">Phone Number</label>
+                        <input type="tel" id="profilePhone" class="profile-input" placeholder="Enter your phone number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profileBio">Bio</label>
+                        <textarea id="profileBio" class="profile-textarea" placeholder="Tell us about yourself..." rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Theme</label>
+                        <div class="theme-picker">
+                            <div class="theme-swatch" data-theme="sunset" style="background: linear-gradient(45deg, #f093fb, #f5576c);"></div>
+                            <div class="theme-swatch" data-theme="forest" style="background: linear-gradient(45deg, #48bb78, #38a169);"></div>
+                            <div class="theme-swatch" data-theme="ocean" style="background: linear-gradient(45deg, #43cea2, #185a9d);"></div>
+                            <div class="theme-swatch" data-theme="blue" style="background: linear-gradient(45deg, #4facfe, #00f2fe);"></div>
+                            <div class="theme-swatch" data-theme="purple" style="background: linear-gradient(45deg, #764ba2, #667eea);"></div>
+                        </div>
+                    </div>
+
+                    <div class="user-stats-section">
+                        <h4 class="stats-title">Your Statistics</h4>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <i class="fas fa-tasks"></i>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="userTotalTasks">0</span>
+                                    <span class="stat-label">Total Tasks</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="userCompletedTasks">0</span>
+                                    <span class="stat-label">Completed</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-fire"></i>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="userStreak">0</span>
+                                    <span class="stat-label">Day Streak</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-chart-line"></i>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="userProductivity">0%</span>
+                                    <span class="stat-label">Productivity</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="user-info">
+                            <div class="info-item">
+                                <i class="fas fa-calendar-plus"></i>
+                                <span>Joined: <span id="userJoinDate">Today</span></span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-clock"></i>
+                                <span>Last Login: <span id="userLastLogin">Now</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <button id="saveProfileBtn" class="save-profile-btn">
+                        <i class="fas fa-save"></i>
+                        Save Changes
+                    </button>
+                    <button id="logoutBtn" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<header class="header">
+    <div class="header-content">
+        <h1 class="logo">
+            <i class="fas fa-tasks"></i>
+            planello
+        </h1>
+        <p class="subtitle">Organize your life, one task at a time</p>
+    </div>
+</header>
+
+<div class="quick-stats">
+    <div class="stat-card">
+        <i class="fas fa-tasks"></i>
+        <div class="stat-content">
+            <h3 id="todayTasks">0</h3>
+            <p>Today's Tasks</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-check-circle"></i>
+        <div class="stat-content">
+            <h3 id="completedTasks">0</h3>
+            <p>Completed</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-clock"></i>
+        <div class="stat-content">
+            <h3 id="upcomingTasks">0</h3>
+            <p>Upcoming</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-trophy"></i>
+        <div class="stat-content">
+            <h3 id="productivityScore">0%</h3>
+            <p>Productivity</p>
+        </div>
+    </div>
+</div>
+
+<div class="focus-section">
+    <h2><i class="fas fa-bullseye"></i> Today's Focus</h2>
+    <div class="focus-content"></div>
+</div>
+
+<div class="container" id="mainContent">
+    <main class="main-content">
+        <div class="task-input-section">
+            <div class="input-group">
+                <input type="text" id="taskInput" placeholder="What needs to be done?" class="task-input" aria-label="Task input" autocomplete="off" tabindex="0">
+                <div id="suggestionsBox" class="suggestions-box" style="display:none;" role="listbox"></div>
+                <select id="prioritySelect" class="priority-select">
+                    <option value="low">Low Priority</option>
+                    <option value="medium" selected>Medium Priority</option>
+                    <option value="high">High Priority</option>
+                </select>
+                <select id="categorySelect" class="category-select">
+                    <option value="work">Work</option>
+                    <option value="personal">Personal</option>
+                    <option value="health">Health</option>
+                    <option value="learning">Learning</option>
+                    <option value="other">Other</option>
+                </select>
+                <button id="addTaskBtn" class="add-btn" aria-label="Add task" tabindex="0">
+                    <i class="fas fa-plus"></i>
+                    Add Task
+                </button>
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">
+                    <i class="fas fa-list"></i>
+                    All Tasks
+                </button>
+                <button class="filter-btn" data-filter="pending">
+                    <i class="fas fa-clock"></i>
+                    Pending
+                </button>
+                <button class="filter-btn" data-filter="completed">
+                    <i class="fas fa-check-circle"></i>
+                    Completed
+                </button>
+                <button class="filter-btn" data-filter="high">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    High Priority
+                </button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search tasks..." class="search-input">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+        </div>
+
+        <div class="tasks-container">
+            <div id="tasksList" class="tasks-list">
+            </div>
+            <div id="emptyState" class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>No tasks yet</h3>
+                <p>Add your first task to get started!</p>
+            </div>
+        </div>
+
+        <div class="actions-section">
+            <button id="undoBtn" class="export-btn" title="Undo" style="background:var(--gradient-warning);border-color:var(--warning-color);"><i class="fas fa-undo"></i> Undo</button>
+            <button id="redoBtn" class="export-btn" title="Redo" style="background:var(--gradient-success);border-color:var(--success-color);"><i class="fas fa-redo"></i> Redo</button>
+            <button id="clearCompletedBtn" class="export-btn">
+                <i class="fas fa-trash"></i>
+                Clear Completed
+            </button>
+            <button id="exportBtn" class="export-btn">
+                <i class="fas fa-file-export"></i>
+                Export Tasks
+            </button>
+        </div>
+    </main>
+</div>
+
+<div class="dashboard-section">
+    <div class="dashboard-header">
+        <h2><i class="fas fa-calendar-week"></i> Weekly Schedule</h2>
+        <div class="dashboard-buttons">
+            <button id="addColumnBtn" class="add-column-btn">
+                <i class="fas fa-plus"></i>
+                Add
+            </button>
+            <button id="deleteColumnBtn" class="delete-column-btn">
+                <i class="fas fa-minus"></i>
+                Delete
+            </button>
+            <button id="templateBtn" class="template-btn">
+                <i class="fas fa-layer-group"></i>
+                Templates
+            </button>
+        </div>
+    </div>
+    <div class="table-container">
+        <table id="dashboardTable" class="dashboard-table">
+            <thead>
+            <tr id="headerRow">
+                <th>Days/Time</th>
+                <th contenteditable="true" class="time-cell" data-col="1"></th>
+                <th contenteditable="true" class="time-cell" data-col="2"></th>
+                <th contenteditable="true" class="time-cell" data-col="3"></th>
+                <th contenteditable="true" class="time-cell" data-col="4"></th>
+            </tr>
+            </thead>
+            <tbody id="tableBody">
+            <tr><td>Monday</td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td></tr>
+            <tr><td>Tuesday</td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td></tr>
+            <tr><td>Wednesday</td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td></tr>
+            <tr><td>Thursday</td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td></tr>
+            <tr><td>Friday</td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td></tr>
+            <tr><td>Saturday</td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td></tr>
+            <tr><td>Sunday</td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td><td contenteditable="true" class="task-cell"></td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="dashboard-footer">
+        <button id="createNewScheduleBtn" class="create-new-schedule-btn">
+            <i class="fas fa-plus-circle"></i>
+            Create New Schedule
+        </button>
+        <button id="saveScheduleBtn" class="save-schedule-btn">
+            <i class="fas fa-save"></i>
+            Save Schedule
+        </button>
+    </div>
+</div>
+
+<div class="analytics-section">
+    <div class="analytics-header">
+        <h2><i class="fas fa-chart-line"></i> Analytics & Insights</h2>
+        <button id="analyticsDemoBtn" class="demo-btn">
+            <i class="fas fa-magic"></i>
+            Demo Analytics
+        </button>
+    </div>
+    <div class="analytics-grid">
+        <div class="analytics-card">
+            <h3>Weekly Progress</h3>
+            <div class="progress-chart">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="weeklyProgress" style="width: 0%"></div>
+                </div>
+                <span id="progressText">0% Complete</span>
+            </div>
+        </div>
+        <div class="analytics-card">
+            <h3>Streak <i class="fas fa-fire"></i></h3>
+            <div class="streak-counter" id="streakCounter">0 days</div>
+        </div>
+        <div class="analytics-card">
+            <h3>Best Day <i class="fas fa-trophy"></i></h3>
+            <div class="best-day" id="bestDay">-</div>
+        </div>
+        <div class="analytics-card">
+            <h3>Completion Rate (7d)</h3>
+            <canvas id="completionChart" width="220" height="60" style="width:100%;max-width:220px;"></canvas>
+        </div>
+        <div class="analytics-card">
+            <h3>Motivation <i class="fas fa-quote-left"></i></h3>
+            <div class="motivational-quote" id="motivationalQuote">You can do it!</div>
+        </div>
+        <div class="analytics-card">
+            <h3>Task Distribution <i class="fas fa-chart-pie"></i></h3>
+            <canvas id="categoryPieChart" width="120" height="120" style="width:100%;max-width:120px;"></canvas>
+        </div>
+        <div class="analytics-card">
+            <h3>Avg. Tasks/Day <i class="fas fa-chart-line"></i></h3>
+            <div class="avg-tasks" id="avgTasks">0</div>
+        </div>
+        <div class="analytics-card">
+            <h3>Task Categories</h3>
+            <div class="category-stats" id="categoryStats">
+            </div>
+        </div>
+        <div class="analytics-card">
+            <h3>Productivity Trends</h3>
+            <div class="trend-chart" id="trendChart">
+            </div>
+        </div>
+        <div class="analytics-card">
+            <h3>Achievements</h3>
+            <div class="achievements" id="achievements">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="notificationContainer" class="notification-container" aria-live="polite"></div>
+
+<div id="editModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="editModalTitle">Edit Task</h3>
+            <button class="close-btn" id="closeModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="editTaskInput" class="edit-input" placeholder="Task description">
+            <select id="editPrioritySelect" class="edit-priority">
+                <option value="low">Low Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="high">High Priority</option>
+            </select>
+            <select id="editCategorySelect" class="edit-category">
+                <option value="work">Work</option>
+                <option value="personal">Personal</option>
+                <option value="health">Health</option>
+                <option value="learning">Learning</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button id="saveEditBtn" class="save-btn">Save Changes</button>
+            <button id="cancelEditBtn" class="cancel-btn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="templateModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="templateModalTitle">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="templateModalTitle">Task Templates</h3>
+            <button class="close-btn" id="closeTemplateModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="template-grid">
+                <div class="template-item" data-template="morning">
+                    <div class="template-icon"><i class="fas fa-sun"></i></div>
+                    <div class="template-header-row">
+                        <h4>Morning Routine <span class="template-badge badge-morning">Morning</span></h4>
+                        <span class="template-usage" title="Times used"><i class="fas fa-fire"></i> <span class="usage-count" data-template="morning">0</span></span>
+                    </div>
+                    <p>Exercise, Breakfast, Planning</p>
+                    <button class="use-template-btn">Use Template</button>
+                    <div class="template-preview" style="display:none;"></div>
+                </div>
+                <div class="template-item" data-template="workday">
+                    <div class="template-icon"><i class="fas fa-briefcase"></i></div>
+                    <div class="template-header-row">
+                        <h4>Work Day <span class="template-badge badge-work">Work</span></h4>
+                        <span class="template-usage" title="Times used"><i class="fas fa-fire"></i> <span class="usage-count" data-template="workday">0</span></span>
+                    </div>
+                    <p>Meetings, Deep Work, Breaks</p>
+                    <button class="use-template-btn">Use Template</button>
+                    <div class="template-preview" style="display:none;"></div>
+                </div>
+                <div class="template-item" data-template="evening">
+                    <div class="template-icon"><i class="fas fa-moon"></i></div>
+                    <div class="template-header-row">
+                        <h4>Evening Routine <span class="template-badge badge-evening">Evening</span></h4>
+                        <span class="template-usage" title="Times used"><i class="fas fa-fire"></i> <span class="usage-count" data-template="evening">0</span></span>
+                    </div>
+                    <p>Dinner, Relaxation, Prep for tomorrow</p>
+                    <button class="use-template-btn">Use Template</button>
+                    <div class="template-preview" style="display:none;"></div>
+                </div>
+                <div class="template-item" data-template="weekend">
+                    <div class="template-icon"><i class="fas fa-calendar-week"></i></div>
+                    <div class="template-header-row">
+                        <h4>Weekend <span class="template-badge badge-weekend">Weekend</span></h4>
+                        <span class="template-usage" title="Times used"><i class="fas fa-fire"></i> <span class="usage-count" data-template="weekend">0</span></span>
+                    </div>
+                    <p>Chores, Hobbies, Rest</p>
+                    <button class="use-template-btn">Use Template</button>
+                    <div class="template-preview" style="display:none;"></div>
+                </div>
+                <form id="customTemplateForm" autocomplete="off">
+                    <div class="template-icon">
+                        <select id="customTemplateIcon" class="custom-icon-select">
+                            <option value="fa-star">⭐</option>
+                            <option value="fa-sun">☀️</option>
+                            <option value="fa-briefcase">💼</option>
+                            <option value="fa-moon">🌙</option>
+                            <option value="fa-calendar-week">📅</option>
+                            <option value="fa-heart">❤️</option>
+                            <option value="fa-list-check">📝</option>
+                        </select>
+                    </div>
+                    <input type="text" id="customTemplateName" class="custom-template-input" placeholder="Template Name" required maxlength="32" />
+                    <textarea id="customTemplateDesc" class="custom-template-input" placeholder="Description (e.g. steps, comma separated)" rows="2" maxlength="80"></textarea>
+                    <input type="text" id="customTemplateTasks" class="custom-template-input" placeholder="Tasks (comma separated)" maxlength="120" />
+                    <div class="custom-template-actions">
+                        <button type="submit" class="use-template-btn">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="custom-template-row">
+            <button id="createCustomTemplateBtn" class="template-btn">
+                <i class="fas fa-plus-circle"></i> Create Custom Template
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div id="deleteConfirmModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmModalTitle">
+    <div class="modal-content delete-confirm-modal">
+        <div class="modal-header">
+            <h3 id="deleteConfirmModalTitle">Delete</h3>
+            <button class="close-btn" id="closeDeleteConfirmModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="delete-confirm-content">
+                <i class="fas fa-exclamation-triangle delete-warning-icon" style="color:#ed8936;"></i>
+                <p id="deleteConfirmMessage">Are you sure you want to delete?</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="confirmDeleteBtn" class="confirm-delete-btn">
+                <i class="fas fa-trash"></i>
+                Yes, Delete
+            </button>
+            <button id="cancelDeleteBtn" class="cancel-delete-btn">
+                <i class="fas fa-times"></i>
+                No, Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="saveScheduleModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="saveScheduleModalTitle">
+    <div class="modal-content save-schedule-modal">
+        <div class="modal-header">
+            <h3 id="saveScheduleModalTitle">Save Weekly Schedule</h3>
+            <button class="close-btn" id="closeSaveScheduleModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="save-schedule-content">
+                <i class="fas fa-save save-schedule-icon"></i>
+                <p id="saveScheduleMessage">Are you sure you want to save the current schedule? This will make all cells read-only until you double-tap to edit.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="confirmSaveScheduleBtn" class="confirm-save-schedule-btn">
+                <i class="fas fa-save"></i>
+                Yes, Save Schedule
+            </button>
+            <button id="cancelSaveScheduleBtn" class="cancel-save-schedule-btn">
+                <i class="fas fa-times"></i>
+                No, Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="createNewScheduleModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="createNewScheduleModalTitle">
+    <div class="modal-content create-new-schedule-modal">
+        <div class="modal-header">
+            <h3 id="createNewScheduleModalTitle">Create New Schedule</h3>
+            <button class="close-btn" id="closeCreateNewScheduleModal">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="create-new-schedule-content">
+                <i class="fas fa-exclamation-triangle create-new-schedule-icon"></i>
+                <p id="createNewScheduleMessage">Are you sure you want to create a new schedule? This will clear all current content and cannot be undone.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="confirmCreateNewScheduleBtn" class="confirm-create-new-schedule-btn">
+                <i class="fas fa-plus-circle"></i>
+                Yes, Create New
+            </button>
+            <button id="cancelCreateNewScheduleBtn" class="cancel-create-new-schedule-btn">
+                <i class="fas fa-times"></i>
+                No, Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- OTP Verification Modal -->
+<div id="otpModal" class="otp-modal" style="display:none;">
+    <div class="otp-modal-content">
+        <div id="otpStep1">
+            <h2>Welcome to Planello</h2>
+            <p>Please enter your details to get started</p>
+            <div class="form-group">
+                <label for="otpNameInput">Your Name</label>
+                <input type="text" id="otpNameInput" class="form-control" placeholder="Enter your name" required />
+            </div>
+            <div class="form-group">
+                <label for="otpPhoneInput">Phone Number</label>
+                <input type="tel" id="otpPhoneInput" class="form-control" placeholder="Enter 10-digit phone number" required />
+            </div>
+            <button id="otpNextBtn" class="btn-primary">Send OTP &rarr;</button>
+            <p style="margin-top:1em;text-align:center;">
+                <a href="existing-user-dashboard.html" id="existingUserLink" style="color:#764ba2;text-decoration:underline;cursor:pointer;">
+                    Existing user? Click here
+                </a>
+            </p>
+        </div>
+        <div id="otpStep2" style="display:none;">
+            <!-- <h2>OTP Verification</h2> -->
+            <p>A one-time password has been sent to <span id="otpPhoneDisplay"></span></p>
+            <p>Enter the 6-digit code we sent you via WhatsApp to continue.</p>
+            <input type="text" id="otpCodeInput" maxlength="6" placeholder="Enter OTP" />
+            <button id="otpVerifyBtn">Verify &rarr;</button>
+            <p id="otpResendSection">Didn't receive the code? <a href="#" id="otpResendLink">Try Again</a></p>
+        </div>
+        <div id="otpStep3" style="display:none;">
+            <!-- <h2>Congratulations</h2> -->
+            <div class="otp-success-icon">&#10003;</div>
+            <p>Thank you<br>Your OTP Verification has been completed successfully!</p>
+            <button id="otpCloseBtn">Close</button>
+        </div>
+        <style>
+            .otp-modal-content {
+                width: 85%;
+                max-width: 420px;
+                background: white;
+                padding: 1.5rem; /* Reduced from 2rem */
+                border-radius: 12px;
+                text-align: center;
+                margin: 1.5rem auto; /* Reduced from 2rem */
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+            .form-group {
+                margin-bottom: 1rem; /* Reduced from 1.5rem */
+                text-align: left;
+            }
+            .form-group label {
+                display: block;
+                margin-bottom: 0.35rem; /* Reduced from 0.5rem */
+                color: #333;
+                font-weight: 700;
+                font-size: 0.95rem; /* Slightly reduced from 1rem */
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            }
+            .form-control {
+                width: 100%;
+                padding: 0.85rem 1rem;
+                border: 2px solid #e0e0e0;
+                border-radius: 10px;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                background-color: #f9f9f9;
+                height: auto;
+                box-sizing: border-box;
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                color: #333;
+                line-height: 1.5;
+            }
+
+            .form-control:focus {
+                border-color: #764ba2;
+                box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
+                outline: none;
+                background-color: #fff;
+            }
+
+            .form-control::placeholder {
+                color: #aaa;
+                opacity: 1;
+            }
+
+            .form-control:disabled {
+                background-color: #f0f0f0;
+                cursor: not-allowed;
+                opacity: 0.8;
+            }
+            /* Buttons */
+            .btn-primary {
+                background: linear-gradient(135deg, #8e44ad, #6c5ce7);
+                color: white;
+                border: none;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                width: 100%;
+                margin-top: 1.5rem;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                box-shadow: 0 4px 12px rgba(108, 92, 231, 0.25);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.75rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .btn-primary .btn-text {
+                position: relative;
+                z-index: 1;
+            }
+
+            .btn-primary .btn-icon {
+                font-size: 0.9em;
+                transition: transform 0.3s ease;
+                position: relative;
+                z-index: 1;
+            }
+
+            .btn-primary::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, #7d3c98, #5d4ec9);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            /* Hover state */
+            .btn-primary:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(108, 92, 231, 0.35);
+            }
+
+            .btn-primary:hover:not(:disabled) .btn-icon {
+                transform: translateX(3px);
+            }
+
+            .btn-primary:hover:not(:disabled)::before {
+                opacity: 1;
+            }
+
+            /* Active state */
+            .btn-primary:active:not(:disabled) {
+                transform: translateY(0);
+                box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
+            }
+
+            /* Focus state */
+            .btn-primary:focus {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.4);
+            }
+
+            /* Disabled state */
+            .btn-primary:disabled {
+                background: #d1d1d1;
+                cursor: not-allowed;
+                box-shadow: none;
+                transform: none !important;
+                opacity: 0.8;
+            }
+
+            /* Loading state */
+            .btn-primary.loading {
+                position: relative;
+                pointer-events: none;
+            }
+
+            .btn-primary.loading::after {
+                content: '';
+                position: absolute;
+                width: 1.5rem;
+                height: 1.5rem;
+                border: 3px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                border-top-color: white;
+                animation: spin 0.8s linear infinite;
+            }
+
+            /* Animations */
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.02); }
+                100% { transform: scale(1); }
+            }
+
+            .btn-primary:not(:disabled):not(.loading) {
+                animation: pulse 2s infinite;
+            }
+        </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Close modal when clicking outside
+                document.getElementById('otpModal').addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeOtpModal();
+                    }
+                });
+
+                // Close button functionality
+                var wrongBtn = document.getElementById('otpWrongTop');
+                if (wrongBtn) {
+                    wrongBtn.onclick = closeOtpModal;
+                }
+            });
+        </script>
+        <div id="otpErrorMsg" class="otp-error" style="display:none;"></div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script src="otp-handler.js"></script>
+</body>
+</html>

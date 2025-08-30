@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>planello - Existing User Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <style>
+    body {
+      background: #7EC3FF;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Poppins', 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-bar {
+      width: auto;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 32px 0 24px 32px;
+      justify-content: flex-start;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .logo-icon {
+      font-size: 2.2rem;
+      color: #764ba2;
+    }
+    .logo-text {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #764ba2;
+      font-family: 'Poppins', 'Inter', sans-serif;
+      letter-spacing: 0.5px;
+    }
+    .dashboard-box {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.12);
+      padding: 2.5rem 2rem 2rem 2rem;
+      min-width: 400px;
+      max-width: 420px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      min-height: 280px;
+      justify-content: center;
+      height: 100%;
+    }
+    @media (max-width: 480px) {
+      .dashboard-box {
+        min-width: 0;
+        max-width: 98vw;
+        margin: 20px;
+        padding: 1.5rem 0.5rem;
+        min-height: 220px;
+      }
+    }
+    #backArrow {
+      position: absolute;
+      left: 18px;
+      top: 18px;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: #764ba2;
+      z-index: 2;
+      background: #fff;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(102,126,234,0.08);
+    }
+    .dashboard-box input[type="tel"] {
+      width: 90%;
+      padding: 0.7rem;
+      margin: 1rem 0 1.2rem 0;
+      border: 1px solid #b3d8fd;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    #foundBox {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="logo-bar">
+  <i class="fas fa-list-check logo-icon" aria-hidden="true"></i>
+  <span class="logo-text">planello</span>
+</div>
+<div class="main-card">
+  <div class="dashboard-box">
+    <div id="backArrow">
+      <i class="fas fa-arrow-left"></i>
+    </div>
+    <label for="existingPhoneInput" style="font-weight: 500; font-size: 1.1rem; margin-bottom: 0.5rem;">Enter your phone number</label>
+    <input type="tel" id="existingPhoneInput" placeholder="Phone Number" maxlength="15" />
+    <button id="checkNumberBtn" style="width:90%;padding:0.7rem;background:#67aaff;color:#fff;border:none;border-radius:24px;font-size:1.1rem;font-weight:600;cursor:pointer;margin-top:0.5rem;transition:background 0.2s;">Check</button>
+    <div id="notFoundMsg" style="display:none;margin-top:1.5rem;font-size:1.1rem;color:#e74c3c;font-weight:500;text-align:center;">Number not found!</div>
+    <div id="foundBox" style="display:none;">
+      <div class="result-box">
+        <h3 class="success-message">Number found!</h3>
+        <button id="nextBtn" class="next-btn">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  window.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('foundBox').style.display = 'none';
+    document.getElementById('notFoundMsg').style.display = 'none';
+    document.getElementById('existingPhoneInput').value = '';
+  });
+  let foundUserPhone = null;
+  let foundUserData = null;
+  document.getElementById('checkNumberBtn').onclick = async function() {
+    const input = document.getElementById('existingPhoneInput').value.trim();
+    const notFoundMsg = document.getElementById('notFoundMsg');
+    const foundBox = document.getElementById('foundBox');
+    notFoundMsg.style.display = 'none';
+    foundBox.style.display = 'none';
+    if (!input) {
+      notFoundMsg.textContent = 'Please enter a phone number.';
+      notFoundMsg.style.display = 'block';
+      return;
+    }
+    try {
+      const res = await fetch('/api/find-user-by-phone', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: input })
+      });
+      const data = await res.json();
+      if (data.success) {
+        foundUserPhone = input;
+        foundUserData = data;
+        notFoundMsg.style.display = 'none';
+        foundBox.style.display = 'block';
+      } else {
+        notFoundMsg.textContent = data.message || 'Number not found!';
+        notFoundMsg.style.display = 'block';
+        foundBox.style.display = 'none';
+      }
+    } catch (err) {
+      notFoundMsg.textContent = 'Server error. Please try again.';
+      notFoundMsg.style.display = 'block';
+      foundBox.style.display = 'none';
+    }
+  };
+  document.getElementById('existingPhoneInput').oninput = function() {
+    document.getElementById('foundBox').style.display = 'none';
+    document.getElementById('notFoundMsg').style.display = 'none';
+  };
+  document.getElementById('backArrow').onclick = function() {
+    window.location.href = 'index.html';
+  };
+  function goToMainPage() {
+    window.location.href = 'index.html';
+  }
+  document.getElementById('nextBtn').onclick = function() {
+    if (foundUserData && foundUserData.success) {
+      // Get user data from the server response
+      let user = foundUserData.user || {};
+
+      // Set default values for required fields
+      user.name = user.name || 'User';
+      user.email = user.email || '';
+      user.phone = user.phone || foundUserPhone || '';
+      user.bio = user.bio || '';
+      user.avatar = user.avatar || null;
+
+      // Initialize stats if not present
+      user.stats = user.stats || {};
+      user.stats.totalTasks = user.stats.totalTasks || 0;
+      user.stats.completedTasks = user.stats.completedTasks || 0;
+      user.stats.streak = user.stats.streak || 0;
+      user.stats.productivity = user.stats.productivity || 0;
+
+      // Set user metadata
+      user.joinDate = user.joinDate || new Date().toLocaleDateString();
+      user.lastLogin = new Date().toLocaleDateString();
+
+      // Store user data in localStorage
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      localStorage.setItem('currentUserPhone', user.phone);
+
+      // Update last login time on the server
+      try {
+        fetch(`/api/users/${user.phone}/update-last-login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lastLogin: new Date().toISOString() })
+        });
+      } catch (err) {
+        console.error('Error updating last login:', err);
+      }
+
+      // Redirect to the main page
+      window.location.href = 'index.html';
+    }
+    // if (!localStorage.getItem('tasks_' + user.phone)) { // Removed
+    //   localStorage.setItem('tasks_' + user.phone, JSON.stringify([])); // Removed
+    // }
+    // if (!localStorage.getItem('dashboardSchedule_' + user.phone)) { // Removed
+    //   localStorage.setItem('dashboardSchedule_' + user.phone, JSON.stringify({})); // Removed
+    // }
+    // if (!localStorage.getItem('focusItem_' + user.phone)) { // Removed
+    //   localStorage.setItem('focusItem_' + user.phone, JSON.stringify({text: '', completed: false})); // Removed
+    // }
+    // Clear OTP-related flags so OTP modal does not show
+    // localStorage.removeItem('loginMode'); // Removed
+    // localStorage.removeItem('loginPhone'); // Removed
+    localStorage.setItem('planello_verified', 'true'); // Mark as verified to skip OTP modal
+    // Reload the page to ensure per-user isolation
+    window.location.href = 'index.html';
+
+
+  };
+</script>
+</body>
+</html>

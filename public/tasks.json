@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "text": "Task 1",
+    "category": "work",
+    "completed": false,
+    "createdAt": "2024-07-05T10:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "text": "Task 2",
+    "category": "personal",
+    "completed": false,
+    "createdAt": "2024-07-05T11:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "text": "Task 3",
+    "category": "other",
+    "completed": false,
+    "createdAt": "2024-07-05T12:00:00.000Z"
+  }
+] 

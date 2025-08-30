@@ -1,0 +1,80 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch planello (File)",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/index.html",
+            "runtimeExecutable": "cmd",
+            "runtimeArgs": ["/c", "start", "${workspaceFolder}/index.html"],
+            "console": "integratedTerminal",
+            "presentation": {
+                "hidden": false,
+                "group": "planello",
+                "order": 1
+            }
+        },
+        {
+            "name": "Launch planello Server",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/server.js",
+            "console": "integratedTerminal",
+            "env": {
+                "PORT": "3000"
+            },
+            "presentation": {
+                "hidden": false,
+                "group": "planello",
+                "order": 2
+            },
+            "preLaunchTask": "npm: install"
+        },
+        {
+            "name": "Open planello in Browser",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}",
+            "presentation": {
+                "hidden": false,
+                "group": "planello",
+                "order": 3
+            },
+            "dependsOn": "Launch planello Server"
+        },
+        {
+            "name": "Open planello File in Browser",
+            "type": "chrome",
+            "request": "launch",
+            "file": "${workspaceFolder}/index.html",
+            "webRoot": "${workspaceFolder}",
+            "presentation": {
+                "hidden": false,
+                "group": "planello",
+                "order": 4
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Server",
+            "program": "${workspaceFolder}/server.js"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "planello: Server + Browser",
+            "configurations": ["Launch planello Server", "Open planello in Browser"],
+            "presentation": {
+                "hidden": false,
+                "group": "planello",
+                "order": 1
+            }
+        }
+    ]
+}

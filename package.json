@@ -1,0 +1,46 @@
+{
+  "name": "planello",
+  "version": "1.0.0",
+  "description": "A modern todo list and task management web application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "todo",
+    "task-management",
+    "planello",
+    "web-app"
+  ],
+  "author": "planello",
+  "license": "MIT",
+  "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
+    "axios": "^1.10.0",
+    "bcryptjs": "^2.4.3",
+    "commander": "^14.0.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "moment-timezone": "^0.6.0",
+    "mongoose": "^7.8.7",
+    "node-cron": "^3.0.3",
+    "socket.io": "^4.7.2"
+  },
+  "exportDate": "2024-12-15T10:30:00.000Z",
+  "totalTasks": 3,
+  "completedTasks": 1,
+  "pendingTasks": 2,
+  "tasks": [
+    {
+      "id": 1702645800000,
+      "text": "Call client",
+      "priority": "high",
+      "completed": true,
+      "createdAt": "2024-12-15T10:30:00.000Z"
+    }
+  ]
+}

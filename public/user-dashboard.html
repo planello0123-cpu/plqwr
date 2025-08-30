@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planello - My Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <style>
+    /* Base Styles */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    :root {
+      --primary-color: #764ba2;
+      --primary-light: #9c6fb9;
+      --secondary-color: #7EC3FF;
+      --accent-color: #5e35b1;
+      --text-light: #ffffff;
+      --text-dark: #333333;
+      --text-muted: #666666;
+      --background-light: #f8f9fa;
+      --border-radius: 12px;
+      --box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background: #f5f7fa;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      line-height: 1.6;
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Header Styles */
+    .dashboard-header {
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .logo-bar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .logo-icon {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      margin-right: 0.5rem;
+    }
+    
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .dashboard-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    
+    .welcome-banner {
+      background: var(--primary-color);
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: var(--text-light);
+      padding: 2rem 1.5rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+      text-align: center;
+      box-shadow: var(--box-shadow);
+    }
+    
+    .welcome-banner h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .welcome-banner p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+    
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .dashboard-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      box-shadow: var(--box-shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .dashboard-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+    
+    .dashboard-card h3 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 0.5rem;
+    }
+    /* User Menu Styles */
+    .user-menu {
+      margin-left: auto;
+      position: relative;
+    }
+    
+    .user-menu-btn {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 50px;
+      padding: 0.4rem 0.8rem 0.4rem 0.4rem;
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+    
+    .user-menu-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .user-menu-btn i {
+      font-size: 1.8rem;
+      margin-right: 0.5rem;
+    }
+    
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      min-width: 200px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      z-index: 1000;
+    }
+    
+    .dropdown-menu.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(5px);
+    }
+    
+    .dropdown-menu a {
+      display: block;
+      padding: 0.8rem 1.2rem;
+      color: var(--text-dark);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+    
+    .dropdown-menu a:hover {
+      background: var(--background-light);
+      color: var(--primary-color);
+    }
+    
+    .dropdown-menu a i {
+      margin-right: 0.5rem;
+      width: 20px;
+      text-align: center;
+    }
+    
+    /* Avatar Styles */
+    .user-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      color: white;
+      box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3);
+      border: 3px solid white;
+    }
+    
+    /* Profile Info */
+    .profile-info {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    
+    .profile-info h3 {
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+    
+    .profile-info p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+    <!-- Header -->
+  <header class="dashboard-header">
+    <div class="logo-bar">
+      <i class="fas fa-list-check logo-icon" aria-hidden="true"></i>
+      <span class="logo-text">planello</span>
+      <div class="user-menu">
+        <button id="userMenuBtn" class="user-menu-btn">
+          <i class="fas fa-user-circle"></i>
+          <span id="userName">User</span>
+          <i class="fas fa-chevron-down" style="margin-left: 0.5rem; font-size: 0.8rem;"></i>
+        </button>
+        <div class="dropdown-menu" id="userDropdown">
+          <a href="#" id="profileLink"><i class="fas fa-user"></i> Profile</a>
+          <a href="#" id="settingsLink"><i class="fas fa-cog"></i> Settings</a>
+          <div class="dropdown-divider"></div>
+          <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    <div class="welcome-banner" id="welcomeBanner">
+      <h1>Welcome, <span id="welcomeName">User</span>!</h1>
+      <p id="welcomeMessage">Here's what's happening today</p>
+    </div>
+
+    <!-- New User Onboarding -->
+    <div id="newUserOnboarding" class="onboarding-container" style="display: none;">
+      <div class="onboarding-card">
+        <h2>👋 Welcome to Planello!</h2>
+        <p>Let's get you started with your productivity journey.</p>
+        <div class="onboarding-steps">
+          <div class="onboarding-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Create your first task</h3>
+              <p>Click the button below to add a new task</p>
+              <button id="createFirstTaskBtn" class="btn-primary">+ New Task</button>
+            </div>
+          </div>
+          <div class="onboarding-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Set up your schedule</h3>
+              <p>Plan your day by setting up your schedule</p>
+              <button id="setupScheduleBtn" class="btn-secondary">Set Up Schedule</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Existing User Dashboard -->
+    <div id="existingUserDashboard" class="dashboard-grid" style="display: none;">
+      <div class="dashboard-card">
+        <h3>Your Tasks</h3>
+        <div id="userTasks">
+          <p>Loading your tasks...</p>
+        </div>
+      </div>
+      
+      <div class="dashboard-card">
+        <h3>Quick Actions</h3>
+        <button id="newTaskBtn" class="btn-primary">+ New Task</button>
+        <button id="viewScheduleBtn" class="btn-secondary">View Schedule</button>
+      </div>
+      
+      <div class="dashboard-card">
+        <h3>Your Profile</h3>
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div id="userProfileInfo">
+          <!-- User info will be loaded here -->
+          <p>Loading profile...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .onboarding-container {
+      margin: 2rem 0;
+    }
+    
+    .onboarding-card {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 2.5rem 2rem;
+      box-shadow: var(--box-shadow);
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .onboarding-card h2 {
+      color: var(--primary-color);
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    
+    .onboarding-card > p {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .onboarding-steps {
+      margin-top: 2.5rem;
+      text-align: left;
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    .onboarding-step {
+      display: flex;
+      align-items: flex-start;
+      padding: 1.5rem;
+      background: var(--background-light);
+      border-radius: var(--border-radius);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .onboarding-step:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .step-number {
+      background: var(--primary-color);
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1.25rem;
+      flex-shrink: 0;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .step-content {
+      flex-grow: 1;
+    }
+    
+    .step-content h3 {
+      margin: 0 0 0.5rem 0;
+      color: var(--text-dark);
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
+    .step-content p {
+      margin: 0 0 1rem 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    
+    .btn-primary, .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: var(--primary-color);
+      color: white;
+      box-shadow: 0 2px 8px rgba(118, 75, 162, 0.3);
+    }
+    
+    .btn-primary:hover {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(118, 75, 162, 0.4);
+    }
+    
+    .btn-secondary {
+      background: white;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(118, 75, 162, 0.05);
+      transform: translateY(-1px);
+    }
+  </style>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load user data
+      const userName = localStorage.getItem('userName') || 'User';
+      const userPhone = localStorage.getItem('currentUserPhone') || '';
+      const isNewUser = localStorage.getItem('isNewUser') === 'true';
+      
+      // Get UI elements
+      const welcomeName = document.getElementById('welcomeName');
+      const welcomeMessage = document.getElementById('welcomeMessage');
+      const welcomeBanner = document.getElementById('welcomeBanner');
+      const newUserOnboarding = document.getElementById('newUserOnboarding');
+      const existingUserDashboard = document.getElementById('existingUserDashboard');
+      
+      // Update UI with user data
+      welcomeName.textContent = userName;
+      document.getElementById('userName').textContent = userName;
+      
+      if (isNewUser) {
+        // Show onboarding for new users
+        welcomeMessage.textContent = 'Welcome to your new productivity hub!';
+        welcomeBanner.style.background = '#5e35b1';
+        newUserOnboarding.style.display = 'block';
+        existingUserDashboard.style.display = 'none';
+        
+        // Set up onboarding buttons
+        document.getElementById('createFirstTaskBtn').addEventListener('click', function() {
+          window.location.href = 'index.html#new-task';
+        });
+        
+        document.getElementById('setupScheduleBtn').addEventListener('click', function() {
+          window.location.href = 'index.html#schedule';
+        });
+      } else {
+        // Show regular dashboard for existing users
+        welcomeMessage.textContent = 'Here\'s what\'s happening today';
+        welcomeBanner.style.background = '#764ba2';
+        newUserOnboarding.style.display = 'none';
+        existingUserDashboard.style.display = 'grid';
+        
+        // Load user tasks and other data
+        loadUserTasks(userPhone);
+        
+        // Set up dashboard buttons
+        document.getElementById('newTaskBtn').addEventListener('click', function() {
+          window.location.href = 'index.html#new-task';
+        });
+        
+        document.getElementById('viewScheduleBtn').addEventListener('click', function() {
+          window.location.href = 'index.html#schedule';
+        });
+      }
+      
+      // Set up event listeners
+      document.getElementById('logoutBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        planelloLogout();
+      });
+      
+      // Toggle user dropdown
+      const userMenuBtn = document.getElementById('userMenuBtn');
+      const userDropdown = document.getElementById('userDropdown');
+      
+      userMenuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        userDropdown.classList.toggle('show');
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function() {
+        userDropdown.classList.remove('show');
+      });
+    });
+    
+    function getAuthHeaders() {
+      const token = localStorage.getItem('authToken');
+      return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+    }
+    
+    function loadUserTasks(phone) {
+      // Fetch user tasks from the server with authentication
+      fetch('/api/tasks', {
+        headers: getAuthHeaders()
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to load tasks');
+          }
+          return response.json();
+        })
+        .then(tasks => {
+          const tasksContainer = document.getElementById('userTasks');
+          if (tasks.length === 0) {
+            tasksContainer.innerHTML = '<p>No tasks found. Create your first task!</p>';
+            return;
+          }
+          
+          const tasksList = document.createElement('ul');
+          tasksList.className = 'task-list';
+          
+          tasks.slice(0, 5).forEach(task => {
+            const taskItem = document.createElement('li');
+            taskItem.className = 'task-item';
+            taskItem.innerHTML = `
+              <input type="checkbox" ${task.completed ? 'checked' : ''}>
+              <span class="task-text">${escapeHtml(task.text)}</span>
+              <span class="task-priority ${task.priority}">${task.priority}</span>
+            `;
+            tasksList.appendChild(taskItem);
+          });
+          
+          if (tasks.length > 5) {
+            const moreTasks = document.createElement('p');
+            moreTasks.textContent = `+${tasks.length - 5} more tasks`;
+            moreTasks.style.marginTop = '0.5rem';
+            moreTasks.style.textAlign = 'center';
+            tasksContainer.innerHTML = '';
+            tasksContainer.appendChild(tasksList);
+            tasksContainer.appendChild(moreTasks);
+          } else {
+            tasksContainer.innerHTML = '';
+            tasksContainer.appendChild(tasksList);
+          }
+        })
+        .catch(error => {
+          console.error('Error loading tasks:', error);
+          document.getElementById('userTasks').innerHTML = 
+            '<p>Error loading tasks. Please try again later.</p>';
+        });
+    }
+    
+    function planelloLogout() {
+      // Clear user data from localStorage
+      localStorage.removeItem('planello_verified');
+      localStorage.removeItem('currentUserPhone');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('isNewUser');
+      localStorage.removeItem('authToken');
+      
+      // Redirect to login page
+      window.location.href = 'index.html';
+    }
+    
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>
