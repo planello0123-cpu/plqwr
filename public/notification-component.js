@@ -20,7 +20,7 @@ class NotificationManager {
             return;
         }
         try {
-            const response = await fetch('http://localhost:3001/api/user-profile', {
+            const response = await fetch('/api/user-profile', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -43,7 +43,7 @@ class NotificationManager {
 
     setupSocketConnection() {
         // Connect to Socket.IO server
-        this.socket = io('http://localhost:3001');
+    this.socket = io();
 
         this.socket.on('connect', () => {
             console.log('Connected to notification server');
@@ -270,7 +270,7 @@ class NotificationManager {
         }
 
         try {
-            const response = await fetch('http://localhost:3001/api/send-email-otp', {
+            const response = await fetch('/api/send-email-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
@@ -297,7 +297,7 @@ class NotificationManager {
             return;
         }
         try {
-            const response = await fetch('http://localhost:3001/api/verify-email-otp', {
+            const response = await fetch('/api/verify-email-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, otp })
@@ -325,7 +325,7 @@ class NotificationManager {
             return;
         }
         try {
-            const response = await fetch('http://localhost:3001/api/send-whatsapp-otp', {
+            const response = await fetch('/api/send-whatsapp-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ phone })
@@ -350,7 +350,7 @@ class NotificationManager {
             return;
         }
         try {
-            const response = await fetch('http://localhost:3001/api/verify-whatsapp-otp', {
+            const response = await fetch('/api/verify-whatsapp-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ phone, otp })
@@ -378,7 +378,7 @@ class NotificationManager {
         }
 
         try {
-            const response = await fetch('http://localhost:3001/api/send-notification', {
+            const response = await fetch('/api/send-notification', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -410,7 +410,7 @@ class NotificationManager {
             return;
         }
         try {
-            const response = await fetch('http://localhost:3001/api/send-notification', {
+            const response = await fetch('/api/send-notification', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
