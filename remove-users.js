@@ -3,7 +3,7 @@ require('dotenv').config();
 
 // Configuration
 const config = {
-    mongoUri: process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/planello',
+    mongoUri: process.env.MONGO_URI,
     mongoOptions: {
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,

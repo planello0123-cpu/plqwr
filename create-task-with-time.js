@@ -6,7 +6,7 @@ const readline = require('readline').createInterface({
 require('dotenv').config();
 
 async function createTaskWithTime() {
-  const uri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/planello';
+  const uri = process.env.MONGO_URI;
   const client = new MongoClient(uri);
 
   try {

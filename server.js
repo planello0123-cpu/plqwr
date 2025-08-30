@@ -26,7 +26,7 @@ const config = {
     nodeEnv: process.env.NODE_ENV || 'development',
 
     // MongoDB Configuration
-    mongoUri: process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/planello',
+    mongoUri: process.env.MONGO_URI,
     mongoOptions: {
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
