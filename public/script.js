@@ -1700,8 +1700,9 @@ class DashboardManager {
     }
 
     async saveSchedule() {
-        // Don't save if we're not logged in
-        if (!this.phone) {
+
+        // Don't save if we're not logged i
+          if (!this.phone) {
             this.showNotification('Please log in to save your schedule', 'error');
             return false;
         }
@@ -1714,6 +1715,7 @@ class DashboardManager {
             // Get the schedule data from the DOM
             const headers = [];
             const rows = [];
+           
 
             // Get headers (time slots)
             const headerCells = document.querySelectorAll('#headerRow th:not(:first-child)');
@@ -1776,33 +1778,7 @@ class DashboardManager {
             });
 
             const data = await response.json();
-DashboardManager.prototype.saveSchedule = function() {
-    const scheduleData = this.getScheduleData();
-    const userId = this.currentUser.id;
 
-    fetch('/api/save-schedule', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-        },
-        body: JSON.stringify({
-            userId: userId,
-            scheduleData: scheduleData
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Schedule saved successfully!');
-        } else {
-            console.error('Error saving schedule:', data.error);
-        }
-    })
-    .catch(error => {
-        console.error('Error saving schedule:', error);
-    });
-};
             if (!response.ok) {
                 throw new Error(data.error || 'Failed to save schedule');
             }
