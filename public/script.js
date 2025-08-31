@@ -1776,7 +1776,33 @@ class DashboardManager {
             });
 
             const data = await response.json();
+DashboardManager.prototype.saveSchedule = function() {
+    const scheduleData = this.getScheduleData();
+    const userId = this.currentUser.id;
 
+    fetch('/api/save-schedule', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: JSON.stringify({
+            userId: userId,
+            scheduleData: scheduleData
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Schedule saved successfully!');
+        } else {
+            console.error('Error saving schedule:', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error saving schedule:', error);
+    });
+};
             if (!response.ok) {
                 throw new Error(data.error || 'Failed to save schedule');
             }
