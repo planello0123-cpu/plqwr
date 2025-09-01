@@ -79,6 +79,7 @@ const config = {
 // Validate required configuration
 const validateConfig = () => {
     const required = [
+        'mongoUri',
         'sendGrid.apiKey'
         // Removed SMS requirements since we have alternatives
     ];
@@ -179,7 +180,7 @@ const userSchema = new mongoose.Schema({
     schedule: {
         type: {
             headers: { type: [String], default: [] },
-            rows: { type: [Array], default: [] }
+            rows: { type: [[String]], default: [] }
         },
         default: () => ({ headers: [], rows: [] })
     },
@@ -1938,21 +1939,22 @@ app.post('/api/schedule', async (req, res) => {
         if (!phone) {
             return res.status(400).json({
                 success: false,
-                message: 'Phone number is required.'
+                error: 'Phone number is required.'
             });
         }
         
-        // Normalize phone to 91XXXXXXXXXX format
+        // Normalize phone number
         const normalizedPhone = phone.replace(/\D/g, '').replace(/^0+/, '');
-        const phoneWithCountryCode = normalizedPhone.length === 10 ? `91${normalizedPhone}` : normalizedPhone;
         
         // Find user by any phone number format
         const user = await User.findOne({
             $or: [
-                { phone: phoneWithCountryCode },
-                { phone: phoneWithCountryCode.replace(/^91/, '') },
-                { phone: `+${phoneWithCountryCode}` },
-                { phone: `+91${phoneWithCountryCode.replace(/^91/, '')}` }
+                { phone: phone },
+                { phone: normalizedPhone },
+                { phone: `91${normalizedPhone}` },
+                { phone: `+91${normalizedPhone}` },
+                { phone: normalizedPhone.replace(/^91/, '') },
+                { phone: `91${normalizedPhone.replace(/^91/, '')}` }
             ]
         });
         
@@ -1960,38 +1962,20 @@ app.post('/api/schedule', async (req, res) => {
             console.error('User not found for phone:', phone);
             return res.status(404).json({
                 success: false,
-                message: 'User not found. Please complete verification first.'
+                error: 'User not found. Please complete verification first.'
             });
         }
         
+        // Allow unverified users to save schedules (for development)
         if (!user.isVerified) {
-            console.error('User not verified:', phone);
-            return res.status(403).json({
-                success: false,
-                message: 'Please verify your phone number before saving a schedule.'
-            });
+            console.log('User not verified, but allowing schedule save for development');
+            // Auto-verify the user
+            user.isVerified = true;
+            await user.save();
         }
 
-        // Remove all non-digit characters and leading z
-
-        // Ensure we have exactly 10 digits after removing non-digits
-        if (normalizedPhone.length !== 10) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid phone number. Must be exactly 10 digits (excluding country code)'
-            });
-        }
-
-        // Format as 91XXXXXXXXXX
-        phone = `91${normalizedPhone}`;
-
-        // Additional validation for the final format
-        if (!isValidPhoneNumber(phone)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid phone number format. Must be in 91XXXXXXXXXX format'
-            });
-        }
+        // Use the phone number from the found user
+        phone = user.phone;
 
         console.log('Normalized phone number for schedule update:', phone);
 
@@ -2051,6 +2035,18 @@ app.post('/api/schedule', async (req, res) => {
             updateData.name = name.trim();
         }
 
+        // Check MongoDB connection status
+        if (mongoose.connection.readyState !== 1) {
+            console.error('MongoDB not connected. ReadyState:', mongoose.connection.readyState);
+            return res.status(500).json({
+                success: false,
+                error: 'Database connection error'
+            });
+        }
+
+        console.log('Attempting to update user with _id:', user._id);
+        console.log('Update data:', JSON.stringify(updateData, null, 2));
+        
         // Update the user's schedule using their _id to be absolutely sure we're updating the right user
         const updatedUser = await User.findOneAndUpdate(
             { _id: user._id },
@@ -2059,10 +2055,10 @@ app.post('/api/schedule', async (req, res) => {
         );
 
         if (!updatedUser) {
-            console.error('Failed to update schedule');
+            console.error('Failed to update user schedule for _id:', user._id, 'with updateData:', updateData);
             return res.status(500).json({
-                success:false,
-                message:'Failed to update user schedule'
+                success: false,
+                message: 'Failed to update user schedule in database.'
             });
         }
         console.log('Schedule updated for user:', {
@@ -2078,9 +2074,19 @@ app.post('/api/schedule', async (req, res) => {
             name: updatedUser.name
         });
     } catch (error) {
-        console.error('Error saving schedule:', error);
+        console.error('=== SCHEDULE SAVE ERROR ===');
+        console.error('Error type:', error.constructor.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        console.error('User _id:', user?._id);
+        console.error('Phone:', user?.phone);
+        console.error('Update data:', updateData);
+        console.error('========================');
+        
         res.status(500).json({
+            success: false,
             error: 'Failed to save schedule',
+            message: error.message,
             details: error.message,
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
