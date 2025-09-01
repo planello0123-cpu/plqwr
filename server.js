@@ -2059,7 +2059,11 @@ app.post('/api/schedule', async (req, res) => {
         );
 
         if (!updatedUser) {
-            throw new Error('Failed to update user schedule');
+            console.error('Failed to update schedule');
+            return res.status(500).json({
+                success:false,
+                message:'Failed to update user schedule'
+            });
         }
         console.log('Schedule updated for user:', {
             phone: updatedUser.phone,
