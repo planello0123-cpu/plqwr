@@ -1575,12 +1575,34 @@ class DashboardManager {
                         td.className = 'task-cell';
                         td.contentEditable = true;
 
-                        // Get the cell content, ensuring it's a string
+                        // Get the cell content
                         let cellContent = rowData[j];
+                        let displayText = '';
+
+                        // Handle different data structures
                         if (Array.isArray(cellContent)) {
-                            cellContent = cellContent.join('\n');
+                            // If it's an array of task objects
+                            displayText = cellContent
+                                .map(item => {
+                                    // Handle both object and string formats
+                                    if (item && typeof item === 'object') {
+                                        return item.text || '';
+                                    }
+                                    return String(item || '');
+                                })
+                                .filter(text => text.trim() !== '')
+                                .join('\n');
+                        } else if (cellContent && typeof cellContent === 'object') {
+                            // If it's a single task object
+                            displayText = cellContent.text || '';
+                        } else {
+                            // If it's a string or other primitive
+                            displayText = String(cellContent || '');
                         }
-                        td.textContent = String(cellContent || '').trim();
+
+                        // Set the display text and store the original data
+                        td.textContent = displayText.trim();
+                        td.dataset.originalData = JSON.stringify(cellContent);
 
                         tr.appendChild(td);
                     }
@@ -1641,7 +1663,6 @@ class DashboardManager {
         // Get headers (time slots)
         const headerCells = this.headerRow.getElementsByClassName('time-cell');
         for (let i = 0; i < headerCells.length; i++) {
-            // Get the header text, using data-original-content if available
             const header = headerCells[i].getAttribute('data-original-content') ||
                 headerCells[i].textContent ||
                 '';
@@ -1655,54 +1676,60 @@ class DashboardManager {
             const cells = dayRows[i].getElementsByClassName('task-cell');
 
             for (let j = 0; j < cells.length; j++) {
-                // Get the cell content, using data-original-content if available
-                let cellContent = cells[j].getAttribute('data-original-content') ||
-                    cells[j].textContent ||
-                    '';
-
-                // Clean up the content
-                cellContent = cellContent.trim();
-
-                // If the content is an array (from previous bug), join it with newlines
-                if (Array.isArray(cellContent)) {
-                    cellContent = cellContent.join('\n');
+                const cell = cells[j];
+                // Try to get the original data first
+                let cellData = [];
+                
+                try {
+                    if (cell.dataset.originalData) {
+                        cellData = JSON.parse(cell.dataset.originalData);
+                        // If it's not an array, wrap it in an array
+                        if (!Array.isArray(cellData)) {
+                            cellData = [cellData];
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Failed to parse original data for cell:', e);
                 }
-
-                row.push(cellContent);
+                
+                // If no original data, use the current text content
+                if (cellData.length === 0) {
+                    const cellContent = cell.textContent.trim();
+                    if (cellContent) {
+                        // Create task objects from the text content
+                        cellData = cellContent.split('\n')
+                            .filter(line => line.trim() !== '')
+                            .map(text => ({
+                                text: text.trim(),
+                                completed: false,
+                                createdAt: new Date().toISOString()
+                            }));
+                    }
+                }
+                
+                row.push(cellData);
             }
 
-            // Only add the row if it has at least one non-empty cell
-            if (row.some(cell => cell !== '')) {
-                rows.push(row);
-            } else if (dayRows.length === 7) {
-                // If we have exactly 7 rows (days of the week), keep empty rows
-                // to maintain the structure
-                rows.push(row);
-            }
+            // Always add the row to maintain the structure
+            rows.push(row);
         }
 
-        // Ensure we always have consistent data structure
-        const result = {
-            headers: headers || [],
-            rows: (rows || []).map(row => (row || []).map(cell =>
-                (cell !== null && cell !== undefined) ? cell.toString().trim() : ''
-            ))
+        // Ensure we have exactly 7 rows (days of the week)
+        while (rows.length < 7) {
+            rows.push(Array(headers.length || 4).fill([]));
+        }
+
+        return {
+            headers: headers,
+            rows: rows.slice(0, 7) // Ensure we don't have more than 7 days
         };
-
-        // Ensure we have at least one row for each day of the week
-        if (result.rows.length < 7) {
-            for (let i = result.rows.length; i < 7; i++) {
-                result.rows.push(Array(result.headers.length || 4).fill(''));
-            }
-        }
 
         return result;
     }
 
     async saveSchedule() {
-
-        // Don't save if we're not logged i
-          if (!this.phone) {
+        // Don't save if we're not logged in
+        if (!this.phone) {
             this.showNotification('Please log in to save your schedule', 'error');
             return false;
         }
@@ -1712,51 +1739,75 @@ class DashboardManager {
         const originalText = saveButton ? saveButton.textContent : '';
 
         try {
-            // Get the schedule data from the DOM
-            const headers = [];
-            const rows = [];
-           
+            // Get the schedule data using our getScheduleData method
+            const scheduleData = this.getScheduleData();
 
-            // Get headers (time slots)
-            const headerCells = document.querySelectorAll('#headerRow th:not(:first-child)');
-            headerCells.forEach(cell => {
-                headers.push(cell.textContent.trim());
-            });
-
-            // Get rows (days and tasks)
-            const dayRows = document.querySelectorAll('#tableBody tr');
-            dayRows.forEach(row => {
-                const rowData = [];
-                const cells = row.querySelectorAll('td:not(:first-child)');
-                cells.forEach(cell => {
-                    rowData.push(cell.textContent.trim());
-                });
-                rows.push(rowData);
-            });
-
-            // Create the schedule data object
-            const scheduleData = {
-                headers: headers,
-                rows: rows
+            // Create a simplified version of the data for logging
+            const logData = {
+                headers: scheduleData.headers,
+                rows: scheduleData.rows.map((row, rowIndex) => {
+                    return row.map(cell => {
+                        if (Array.isArray(cell)) {
+                            return cell.map(task => ({
+                                text: task.text,
+                                completed: task.completed
+                            }));
+                        }
+                        return cell;
+                    });
+                })
             };
 
             // Log the schedule data in a more readable format
             console.log('=== Schedule Data ===');
             console.log('Headers:', scheduleData.headers);
             console.log('Rows:');
-            scheduleData.rows.forEach((row, i) => {
-                console.log(`  Row ${i + 1}:`, row);
+            
+            // Create a human-readable version of the data for logging
+            const readableRows = scheduleData.rows.map((row, rowIndex) => {
+                return row.map(cell => {
+                    if (Array.isArray(cell)) {
+                        // For arrays of tasks, extract just the text
+                        return cell.map(task => 
+                            typeof task === 'object' ? task.text : String(task)
+                        ).filter(Boolean);
+                    }
+                    return cell;
+                });
+            });
+            
+            // Log each row with proper formatting
+            readableRows.forEach((row, i) => {
+                console.group(`Row ${i + 1}:`);
+                row.forEach((cell, j) => {
+                    if (Array.isArray(cell) && cell.length > 0) {
+                        console.log(`  Cell ${j + 1}:`, cell.join('\n    '));
+                    } else if (cell && typeof cell === 'object') {
+                        console.log(`  Cell ${j + 1}:`, JSON.stringify(cell, null, 2));
+                    } else {
+                        console.log(`  Cell ${j + 1}:`, cell || '(empty)');
+                    }
+                });
+                console.groupEnd();
             });
             console.log('=====================');
 
             // Also log as a table for better visualization
-            console.table({
-                'Time/Day': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', ...scheduleData.headers],
-                ...scheduleData.rows.reduce((acc, row, i) => {
-                    acc[`Day ${i + 1}`] = row;
-                    return acc;
-                }, {})
+            const tableData = {};
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            
+            readableRows.forEach((row, i) => {
+                if (i < days.length) {
+                    tableData[days[i]] = row.map(cell => 
+                        Array.isArray(cell) 
+                            ? cell.join(' | ')
+                            : String(cell || '')
+                    );
+                }
             });
+            
+            console.log('=== Schedule Table View ===');
+            console.table(tableData);
 
             // Show saving indicator
             if (saveButton) {
